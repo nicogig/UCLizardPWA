@@ -1,0 +1,181 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="description" content="Solving the quest for seats at UCL.">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0">
+
+  <title>UCLizard</title>
+
+  <!-- Page styles -->
+  <link rel="stylesheet"
+    href="https://fonts.googleapis.com/css?family=Roboto:regular,bold,italic,thin,light,bolditalic,black,medium&amp;lang=en">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+  <link rel="stylesheet" href="https://code.getmdl.io/1.3.0/material.min.css">
+  <link rel="stylesheet" href="styles.css">
+  <style>
+    #view-source {
+      position: fixed;
+      display: block;
+      right: 0;
+      bottom: 0;
+      margin-right: 40px;
+      margin-bottom: 40px;
+      z-index: 900;
+    }
+  </style>
+  <style>
+    .demo-card-wide.mdl-card {
+      width: 512px;
+      margin: auto;
+    }
+
+    .demo-card-wide>.mdl-card__title {
+      color: #fff;
+      height: 90px;
+      background: #93272C;
+    }
+
+    .demo-card-wide>.mdl-card__menu {
+      color: #fff;
+    }
+
+
+    .content-libraries {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+    }
+
+    .branding-colour {
+      background: #003d4c;
+    }
+
+    .top-bar-icon {
+      color: white;
+    }
+
+    .parallax { 
+  /* The image used */
+
+  /* Full height */
+  height: 100%; 
+
+  /* Create the parallax scrolling effect */
+  background-attachment: fixed;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: cover;
+}
+
+  </style>
+
+</head>
+
+<body>
+  <!-- Uses a transparent header that draws on top of the layout's background -->
+  <style>
+    .demo-layout-transparent {
+      background: #ffffff center / cover;
+    }
+
+    .demo-layout-transparent .mdl-layout__header,
+    .demo-layout-transparent .mdl-layout__drawer-button {
+      /* This background is dark, so we set text to white. Use 87% black instead if
+             your background is light. */
+      color: white;
+    }
+  </style>
+
+  <div class="mdl-layout mdl-js-layout mdl-layout--fixed-header demo-layout-transparent">
+    <header class="mdl-layout__header branding-colour">
+      <div class="mdl-layout-icon">
+        <button class="mdl-button mdl-js-button mdl-button--icon mdl-button--colored" onclick="history.back()">
+          <i class="material-icons top-bar-icon">arrow_back</i>
+        </button>
+      </div>
+      <div class="mdl-layout__header-row" id="header-row">
+        <!-- Title -->
+
+        <!-- Add spacer, to align navigation to the right -->
+        <div class="mdl-layout-spacer"></div>
+        <!-- Navigation -->
+      </div>
+
+    </header>
+    <main class="mdl-layout__content parallax" id="main-content-bg">
+
+      <br />
+      <div id="spaces-list">
+      </div>
+    </main>
+  </div>
+
+  <script src="https://code.getmdl.io/1.3.0/material.min.js"></script>
+  <script>
+    function get(name) {
+      if (name = (new RegExp('[?&]' + encodeURIComponent(name) + '=([^&]*)')).exec(location.search))
+        return decodeURIComponent(name[1]);
+    }
+
+    // Call Variables
+    url_bypass = "https://cors-anywhere.herokuapp.com/";
+    api_token = "***REMOVED***";
+    place_id = get('id');
+    console.log(place_id);
+    url_request = url_bypass + "https://uclapi.com/workspaces/sensors/summary?token=" + api_token + "&survey_ids=" +
+      place_id;
+
+    // Colours
+    ucl_red = "#93272C";
+    ucl_yellow = "#F6BE00";
+    ucl_green = "#8F993E";
+
+    fetch(url_request, {
+        method: "GET",
+      })
+      .then((response) => {
+        return response.json()
+      })
+      .then((json) => {
+        console.log(json);
+        var library_list = document.getElementById('spaces-list');
+        var name_page = document.getElementById('header-row');
+        html_element = '<span class="mdl-layout-title">' + json['surveys'][0]['name'] + '</span>';
+        name_page.insertAdjacentHTML('afterbegin', html_element);
+        bg_image = "./assets/" + json['surveys'][0]['id'] + ".jpg";
+        console.log(bg_image);
+        document.getElementById('main-content-bg').style.backgroundImage = "url('" + bg_image + "');";
+        console.log(json['surveys'][0]['maps']);
+        var places_list = json['surveys'][0]['maps'];
+
+        for (let index = 0; index < places_list.length; index++) {
+          places_total = places_list[index]['sensors_absent'] + places_list[index]['sensors_occupied'] + places_list[
+            index]['sensors_other'];
+          places_ratio = places_list[index]['sensors_absent'] / places_total;
+          if (0 < places_ratio < 0.33) {
+            colour = ucl_red;
+          } else if (0.33 < places_ratio < 0.66) {
+            colour = ucl_yellow;
+          } else {
+            colour = ucl_green;
+          }
+          html_element_1 =
+            '<div class="demo-card-wide mdl-card mdl-shadow--2dp"><div class="mdl-card__title" style="background: ' +
+            colour + ';"><h2 class="mdl-card__title-text">';
+          html_element_2 = html_element_1 + places_list[index]['name'] +
+            '</h2></div><div class="mdl-card__supporting-text">';
+          html_element_3 = html_element_2 + places_list[index]['sensors_absent'] + ' Places Available out of ' +
+            places_total + '.</div>';
+          html_element_4 = html_element_3 +
+            '<div class="mdl-card__actions mdl-card--border"><a class="mdl-button mdl-button--colored mdl-js-button mdl-js-ripple-effect" style="color: ' +
+            colour + '" href="./maps/map.html?' + 'id=' + place_id + '&' + 'id_map=' + places_list[index]['id'] +
+            '">';
+          html_element_final = html_element_4 + 'Open Map</a></div></div><br/>';
+          library_list.insertAdjacentHTML('beforeend', html_element_final);
+        }
+      })
+  </script>
+</body>
