@@ -1,0 +1,16 @@
+{
+    "short_name": "UCLizard",
+    "name": "UCLizard",
+    "icons": [
+      {
+        "src": "./images/ic_launcher.png",
+        "type": "image/png",
+        "sizes": "192x192"
+      }
+    ],
+    "start_url": "/",
+    "background_color": "#003d4c",
+    "display": "standalone",
+    "scope": "/",
+    "theme_color": "#003d4c"
+  }

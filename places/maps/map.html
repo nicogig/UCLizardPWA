@@ -6,6 +6,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="description" content="Solving the quest for seats at UCL.">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0">
+    <link rel="manifest" href="../../manifest.json">
     <title>UCLizard</title>
 
     <!-- Page styles -->
@@ -14,6 +15,8 @@
     <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
     <link rel="stylesheet" href="https://code.getmdl.io/1.3.0/material.min.css">
     <link rel="stylesheet" href="styles.css">
+    <script src="svg-pan-zoom.js"></script>
+    <script src="svg-pan-zoom.min.js"></script>
     <style>
         #view-source {
             position: fixed;
@@ -60,69 +63,103 @@
 </head>
 
 <body>
-        <div class="mdl-layout mdl-js-layout mdl-layout--fixed-header demo-layout-transparent">
-                <header class="mdl-layout__header branding-colour">
-                  <div class="mdl-layout-icon">
-                    <button class="mdl-button mdl-js-button mdl-button--icon mdl-button--colored" onclick="history.back()">
-                      <i class="material-icons top-bar-icon">arrow_back</i>
-                    </button>
-                  </div>
-                  <div class="mdl-layout__header-row" id="header-row">
-                    <!-- Title -->
-            
-                    <!-- Add spacer, to align navigation to the right -->
-                    <div class="mdl-layout-spacer"></div>
-                    <!-- Navigation -->
-                  </div>
-            
-                </header>
-                <main class="mdl-layout__content parallax" id="main-content-bg">
-            
-                  <br />
-                  <div id="spaces-list">
-                        <canvas id="canvas" width="1000px" height="800px" style="height: 100%; width: auto;"></canvas>
-                  </div>
-                </main>
-              </div>
-       
+    <div class="mdl-layout mdl-js-layout mdl-layout--fixed-header demo-layout-transparent">
+        <header class="mdl-layout__header branding-colour">
+            <div class="mdl-layout-icon">
+                <button class="mdl-button mdl-js-button mdl-button--icon mdl-button--colored" onclick="history.back()">
+                    <i class="material-icons top-bar-icon">arrow_back</i>
+                </button>
+            </div>
+            <div class="mdl-layout__header-row" id="header-row">
+                <!-- Title -->
+
+                <!-- Add spacer, to align navigation to the right -->
+                <div class="mdl-layout-spacer"></div>
+                <!-- Navigation -->
+            </div>
+
+        </header>
+        <main class="mdl-layout__content parallax" id="main-content-bg">
+
+            <br />
+            <div id="spaces-list">
+                <div id="map_canvas">
+                </div>
+            </div>
+        </main>
+    </div>
+
     <!-- Required to convert named colors to RGB -->
     <script src="https://cdn.jsdelivr.net/npm/rgbcolor@^1/index.js"></script>
     <!-- Optional if you want blur -->
     <script src="https://cdn.jsdelivr.net/npm/stackblur-canvas@^1/dist/stackblur.min.js"></script>
     <!-- Main canvg code -->
-    <script src="https://cdn.jsdelivr.net/npm/canvg/dist/browser/canvg.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/canvg@2.0.0-beta.1/dist/browser/canvg.min.js"></script>
     <script>
         function get(name) {
-      if (name = (new RegExp('[?&]' + encodeURIComponent(name) + '=([^&]*)')).exec(location.search))
-        return decodeURIComponent(name[1]);
-    }
-
-    // Call Variables
-    url_bypass = "https://cors-anywhere.herokuapp.com/";
-    api_token = "***REMOVED***";
-    place_id = get('id');
-    map_id = get('id_map');
-    url_request = url_bypass + "https://uclapi.com/workspaces/images/map/live?token=" + api_token + "&survey_id=" + place_id + '&map_id=' + map_id;
-    url_request_name = url_bypass + "https://uclapi.com/workspaces/sensors/summary?token=" + api_token + "&survey_ids=" +
-      place_id;
-    fetch(url_request_name, {
-        method: "GET",
-    }).then((response) => {
-        return response.json()
-    }).then((json) => {
-        console.log(json);
-        var places_list = json['surveys'][0]['maps'];
-        for (let index = 0; index < places_list.length; index++) {
-            if (places_list[index]['id'] == map_id) {
-                var name_page = document.getElementById('header-row');
-        html_element = '<span class="mdl-layout-title">' + places_list[index]['name'] + '</span>';
-        name_page.insertAdjacentHTML('afterbegin', html_element);
-            }
+            if (name = (new RegExp('[?&]' + encodeURIComponent(name) + '=([^&]*)')).exec(location.search))
+                return decodeURIComponent(name[1]);
         }
-    })
-    window.onload = function() {
-  //load '../path/to/your.svg' in the canvas with id = 'canvas'
-  canvg('canvas', url_request);
+
+        function getWidth() {
+            return Math.max(
+                document.body.scrollWidth,
+                document.documentElement.scrollWidth,
+                document.body.offsetWidth,
+                document.documentElement.offsetWidth,
+                document.documentElement.clientWidth
+            );
+        }
+
+        function getHeight() {
+            return Math.max(
+                document.body.scrollHeight,
+                document.documentElement.scrollHeight,
+                document.body.offsetHeight,
+                document.documentElement.offsetHeight,
+                document.documentElement.clientHeight
+            );
+        }
+
+        // Call Variables
+        url_bypass = "https://cors-anywhere.herokuapp.com/";
+        api_token = "***REMOVED***";
+        place_id = get('id');
+        map_id = get('id_map');
+        url_request = url_bypass + "https://uclapi.com/workspaces/images/map/live?token=" + api_token + "&survey_id=" +
+            place_id + '&map_id=' + map_id;
+        url_request_name = url_bypass + "https://uclapi.com/workspaces/sensors/summary?token=" + api_token +
+            "&survey_ids=" +
+            place_id;
+        fetch(url_request_name, {
+            method: "GET",
+        }).then((response) => {
+            return response.json()
+        }).then((json) => {
+            console.log(json);
+            var places_list = json['surveys'][0]['maps'];
+            for (let index = 0; index < places_list.length; index++) {
+                if (places_list[index]['id'] == map_id) {
+                    var name_page = document.getElementById('header-row');
+                    html_element = '<span class="mdl-layout-title">' + places_list[index]['name'] + '</span>';
+                    name_page.insertAdjacentHTML('afterbegin', html_element);
+                }
+            }
+        })
+
+        window.onload = function () {
+            //load '../path/to/your.svg' in the canvas with id = 'canvas'
+            var canvas = document.getElementById('canvas');
+            style_tag = "width: " + getWidth() + "; height: " + (getHeight() - 76) + ";";
+            fetch(url_request)
+            .then(response => response.text())
+            .then(svg => {
+                document.getElementById('map_canvas').insertAdjacentHTML("afterbegin", svg);
+                map_canvas = document.getElementsByTagName("svg")[0];
+            console.log(document.getElementsByTagName("svg").length);
+            map_canvas.setAttribute('style', style_tag);
+            var panZoomMap = svgPanZoom(map_canvas)
+            });
         };
     </script>
 </body>

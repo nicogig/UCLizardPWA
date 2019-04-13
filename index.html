@@ -11,6 +11,7 @@
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black">
   <link rel="apple-touch-startup-image" href="/images/launch.png">
+  <link rel="manifest" href="/manifest.json">
   <title>UCLizard</title>
 
   <!-- Page styles -->
@@ -76,6 +77,15 @@
         Thanks for using UCLizard!<br />
         You're using our web app, which means that you will always be on the latest version.<br />
         Here are some of the changes we've been working on:<br />
+        <b>v0.1.0: </b><i>14th April, 2019</i>
+        Thank you for using UCLizard Insiders Preview! <br/>
+        This is the first public release of UCLizard on the Web.<br/>
+        There are substantial changes compared to our previous release, here are some that we enjoy!<br/>
+        - You can now pin the app to make it work like a native app!<br/>
+        - You can now pan and zoom the map!<br/>
+        - We fixed a bug where some places were shown as free when they were taken<br/>
+        - We improved the efficiency of the app<br/>
+        - Removed Herobrine<br/>
         <b>v0.0.2: </b><i>12th April, 2019</i><br/>
         This release includes a fix to a bug that prevented users on non Chromium-based browsers
         from using our service. You are now able to use UCLizard on the Web on every HTML5 compliant browser.
@@ -150,6 +160,7 @@
 
   <!-- Code for JSON Parsing and Home Building -->
   <script>
+
     var dialog = document.querySelector('dialog');
     var showDialogButton = document.querySelector('#show-dialog');
     if (!dialog.showModal) {
@@ -187,11 +198,12 @@
           places_total = json['surveys'][index]['sensors_absent'] + json['surveys'][index]['sensors_occupied'] + json[
             'surveys'][index]['sensors_other'];
           places_ratio = json['surveys'][index]['sensors_absent'] / places_total;
-          if (0 < places_ratio < 0.33) {
+          console.log(places_ratio);
+          if (0 < places_ratio && places_ratio < 0.33) {
             colour = ucl_red;
-          } else if (0.33 < places_ratio < 0.66) {
+          } else if (0.33 < places_ratio && places_ratio < 0.66) {
             colour = ucl_yellow;
-          } else {
+          } else if (0.66 < places_ratio && places_ratio < 1){
             colour = ucl_green;
           }
           html_element_1 =
@@ -203,7 +215,7 @@
             places_total + '.</div>';
           html_element_4 = html_element_3 +
             '<div class="mdl-card__actions mdl-card--border"><a class="mdl-button mdl-button--colored mdl-js-button mdl-js-ripple-effect" style="color: ' +
-            colour + '" href="./places/place_details.html?id=' + json['surveys'][index]['id'] + '">';
+            colour + '" href="./places/place_details.html?id=' + json['surveys'][index]['id'] + '" target="_parent">';
           html_element_final = html_element_4 + 'View More</a></div></div><br/>';
           library_list.insertAdjacentHTML('beforeend', html_element_final);
         }
