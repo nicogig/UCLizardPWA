@@ -150,7 +150,7 @@
         window.onload = function () {
             //load '../path/to/your.svg' in the canvas with id = 'canvas'
             var canvas = document.getElementById('canvas');
-            style_tag = "width: " + getWidth() + "; height: " + (getHeight() - 76) + ";";
+            style_tag = "width: " + getWidth() + "; height: " + (getHeight()) + ";";
             fetch(url_request)
             .then(response => response.text())
             .then(svg => {
