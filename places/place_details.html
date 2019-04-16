@@ -132,6 +132,20 @@
     ucl_red = "#93272C";
     ucl_yellow = "#F6BE00";
     ucl_green = "#8F993E";
+    function getWidth() {
+            return Math.max(
+                document.body.scrollWidth,
+                document.documentElement.scrollWidth,
+                document.body.offsetWidth,
+                document.documentElement.offsetWidth,
+                document.documentElement.clientWidth
+            );
+        }
+          if (getWidth() < 512) {
+            var width = getWidth();
+          } else {
+            var width = 512;
+          }
 
     fetch(url_request, {
         method: "GET",
@@ -163,7 +177,7 @@
             colour = ucl_green;
           }
           html_element_1 =
-            '<div class="demo-card-wide mdl-card mdl-shadow--2dp"><div class="mdl-card__title" style="background: ' +
+            '<div class="demo-card-wide mdl-card mdl-shadow--2dp" style="width: ' + width + 'px' + ';"><div class="mdl-card__title" style="background: ' +
             colour + ';"><h2 class="mdl-card__title-text">';
           html_element_2 = html_element_1 + places_list[index]['name'] +
             '</h2></div><div class="mdl-card__supporting-text">';
