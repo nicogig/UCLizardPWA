@@ -1,3 +1,13 @@
+#view-source {
+    position: fixed;
+    display: block;
+    right: 0;
+    bottom: 0;
+    margin-right: 40px;
+    margin-bottom: 40px;
+    z-index: 900;
+}
+
 .demo-card-wide.mdl-card {
     width: 512px;
     margin: auto;
@@ -21,7 +31,7 @@
 }
 
 .branding-colour {
-    background: #002855;
+    background: #003d4c;
 }
 
 .top-bar-icon {
