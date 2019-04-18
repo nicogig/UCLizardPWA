@@ -40,7 +40,7 @@ fetch(url_request, {
                 colour = ucl_red;
             } else if (0.33 < places_ratio && places_ratio < 0.66) {
                 colour = ucl_yellow;
-            } else if (0.66 < places_ratio && places_ratio < 1) {
+            } else if (0.66 < places_ratio) {
                 colour = ucl_green;
             }
 
