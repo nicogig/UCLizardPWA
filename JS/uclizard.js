@@ -12,8 +12,7 @@ dialog.querySelector('.close').addEventListener('click', function () {
 
 // Call Variables
 url_bypass = "https://cors-anywhere.herokuapp.com/";
-api_token = "***REMOVED***";
-url_request = url_bypass + "https://uclapi.com/workspaces/sensors/summary?token=" + api_token;
+url_request = url_bypass + "https://uclizard-backend.herokuapp.com/backend?summary=true";
 
 // Colours
 ucl_red = "#93272C";

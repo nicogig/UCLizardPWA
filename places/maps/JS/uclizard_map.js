@@ -25,14 +25,10 @@ function getHeight() {
 
 // Call Variables
 url_bypass = "https://cors-anywhere.herokuapp.com/";
-api_token = "***REMOVED***";
 place_id = get('id');
 map_id = get('id_map');
-url_request = url_bypass + "https://uclapi.com/workspaces/images/map/live?token=" + api_token + "&survey_id=" +
-    place_id + '&map_id=' + map_id;
-url_request_name = url_bypass + "https://uclapi.com/workspaces/sensors/summary?token=" + api_token +
-    "&survey_ids=" +
-    place_id;
+url_request = url_bypass + "https://uclizard-backend.herokuapp.com/backend?map=true&place_id=" + place_id + '&map_id=' + map_id;
+url_request_name = url_bypass + "https://uclizard-backend.herokuapp.com/backend?detail=true&place_id=" + place_id;
 fetch(url_request_name, {
     method: "GET",
 }).then((response) => {

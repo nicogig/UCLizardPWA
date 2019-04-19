@@ -5,11 +5,9 @@ function get(name) {
 
 // Call Variables
 url_bypass = "https://cors-anywhere.herokuapp.com/";
-api_token = "***REMOVED***";
 place_id = get('id');
 console.log(place_id);
-url_request = url_bypass + "https://uclapi.com/workspaces/sensors/summary?token=" + api_token + "&survey_ids=" +
-    place_id;
+url_request = url_bypass + "https://uclizard-backend.herokuapp.com/backend?detail=true&place_id=" + place_id;
 
 // Colours
 ucl_red = "#93272C";
